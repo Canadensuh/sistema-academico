@@ -1,19 +1,18 @@
 package br.edu.faex.academico;
 
+import br.edu.faex.academico.config.Conexao;
 import br.edu.faex.academico.model.Aluno;
 import br.edu.faex.academico.repository.AlunoRepository;
 
+import java.sql.Connection;
+
 public class Main {
     static void main() {
-        Aluno aluno1 = new Aluno("Maia", "maia@teste");
-        Aluno aluno2 = new Aluno("Joao", "joao@teste");
-        AlunoRepository repository = new AlunoRepository();
-        repository.salvar(aluno1);
-        repository.salvar(aluno2);
-        for (Aluno aluno : repository.listar()){
-            System.out.println("Nome: " + aluno.getNome());
-            System.out.println("E-mail: " + aluno.getEmail());
-            System.out.println("Ativo: " + aluno.isAtivo());
+        try (Connection con = Conexao.conectar()) {
+            System.out.println("Conectado");
+        } catch (Exception e) {
+            System.out.println("Erro ao conectar");
+            System.out.println(e.getMessage());
         }
     }
 }
