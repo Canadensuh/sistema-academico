@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlunoRepository {
+public class AlunoRepository<PreparedStatment> {
     private List<Aluno> alunos = new ArrayList<>();
 
     public void salvar(Aluno aluno){
@@ -81,12 +81,16 @@ public class AlunoRepository {
     }
 
     public void excluir(Long id){
-        for (Aluno aluno : alunos){
-            if(aluno.getId().equals(id)){
-                alunos.remove(aluno);
-                return;
-            }
-        }
+       String sql = "DELETE FROM alunos WHERE id = ?";
+       try {
+           Connection conexao = Conexao.conectar();
+           PreparedStatement comando = conexao.prepareStatement(sql);
+           comando.setLong(1, id);
+           comando.executeUpdate();
+       } catch (SQLException e) {
+           System.out.println("Erro ao excluir: " + e.getMessage());
+       }
+
     }
 
     public void atualizar(Aluno alunoEditado){
