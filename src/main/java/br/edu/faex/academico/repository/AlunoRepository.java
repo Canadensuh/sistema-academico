@@ -58,11 +58,24 @@ public class AlunoRepository {
 
     }
 
-    public Aluno buscarPorId(Long id){
-        for (Aluno aluno : alunos){
-            if (aluno.getId().equals(id)){
+    public Aluno buscarPorId(Long id) {
+        String sql = "SELECT * FROM alunos WHERE id = ?";
+        try {
+            Connection conexao = Conexao.conectar();
+            PreparedStatement comando = conexao.prepareStatement(sql);
+            comando.setLong(1, id);
+            ResultSet resultado = comando.executeQuery();
+            if(resultado.next()){
+                Aluno aluno = new Aluno();
+                aluno.setId(resultado.getLong("id"));
+                aluno.setNome(resultado.getString("nome"));
+                aluno.setEmail(resultado.getString("email"));
+                aluno.setAtivo(resultado.getBoolean("ativo"));
                 return aluno;
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar: " + e.getMessage());
         }
         return null;
     }
