@@ -1,3 +1,4 @@
+
 package br.edu.faex.academico.service;
 
 import br.edu.faex.academico.model.Aluno;
@@ -29,17 +30,17 @@ public class AlunoService {
             return;
         }
 
-        if (repository.listar().stream()
-                .anyMatch(a -> a.getEmail().equalsIgnoreCase(aluno.getEmail()))) {
-            System.out.println("E-mail já cadastrado.");
-            return;
+        for (Aluno a : repository.listar()) {
+            if (a.getEmail().equalsIgnoreCase(aluno.getEmail())) {
+                System.out.println("E-mail já cadastrado.");
+                return;
+            }
         }
 
         aluno.setId(proximoId);
         proximoId++;
 
         this.repository.salvar(aluno);
-
     }
 
     public List<Aluno> listar(){
@@ -56,20 +57,23 @@ public class AlunoService {
 
     public void excluir(Long id){
         Aluno aluno = repository.buscarPorId(id);
-        if(aluno == null){
+        if (aluno == null){
             System.out.println("Aluno não encontrado.");
             return;
         }
+
         repository.excluir(id);
         System.out.println("Aluno excluído com sucesso.");
     }
 
     public void atualizar(Aluno alunoEditado){
         Aluno aluno = repository.buscarPorId(alunoEditado.getId());
+
         if (aluno == null){
             System.out.println("Aluno não encontrado.");
             return;
         }
+
         if (alunoEditado.getNome() == null || alunoEditado.getNome().isBlank()) {
             System.out.println("O nome do aluno é obrigatório.");
             return;
@@ -84,17 +88,16 @@ public class AlunoService {
             System.out.println("E-mail inválido.");
             return;
         }
-        if (repository.listar().stream()
-                .anyMatch(a -> a.getEmail().equalsIgnoreCase(alunoEditado.getEmail())
-                        && !a.getId().equals(alunoEditado.getId()))) {
 
-            System.out.println("E-mail já cadastrado.");
-            return;
+        for (Aluno a : repository.listar()) {
+            if (a.getEmail().equalsIgnoreCase(alunoEditado.getEmail())
+                    && !a.getId().equals(alunoEditado.getId())) {
+                System.out.println("E-mail já cadastrado.");
+                return;
+            }
         }
+
         repository.atualizar(alunoEditado);
         System.out.println("Aluno atualizado com sucesso.");
     }
-
-
-
 }
